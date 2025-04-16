@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Script name: chall
+
+# Find all .php files in current directory and process them
+for file in *.php; do
+    if [[ -f "$file" ]]; then
+        echo "Processing $file..."
+        chh.sh "$file"
+    else
+        echo "No .php files found"
+        exit 1
+    fi
+done
+
+echo "All .php files processed"
