@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#
+# git-push-current.sh
+# Thêm tất cả thay đổi, commit với message là tên nhánh hiện tại, rồi push lên origin
+
+# Bước 1: Lấy tên nhánh hiện tại
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+# Nếu không lấy được nhánh thì thoát
+if [ -z "$branch" ]; then
+  echo "❌ Không xác định được nhánh hiện tại."
+  exit 1
+fi
+
+# Bước 2: Thêm thay đổi
+git add .
+
+# Bước 3: Commit với message là tên nhánh
+git commit -m "$branch"
+
+# Bước 4: Push lên originread -p 
+read -p "Bạn có chắc muốn push lên $branch? (y/n): " answer
+case "$answer" in
+  [Yy]* )
+    git push origin "$branch"
+    echo "✅ Đã push thành công lên $branch." ;;
+  * )
+    echo "❌ Đã hủy lệnh push." ;;
+esac
