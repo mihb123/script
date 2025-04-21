@@ -42,7 +42,7 @@ set wildmenu               " - Bật menu gợi ý lệnh :e.
 set path+=**               " - Tìm file trong thư mục con.
 set autoread               " - Tự động tải lại file nếu tệp thay đổi bên ngoài.
 set confirm                " - Hiển thị hộp thoại xác nhận khi thoát mà chưa lưu.
-
+set nocursorline           " - Bỏ highlight dòng lệnh  
 " Phím tắt tiện lợi
 nnoremap <C-a> ggVG        " - Ctrl+A để chọn toàn bộ văn bản.
 vnoremap <C-a> <Esc>ggVG   " - Ctrl+A để chọn toàn bộ văn bản trong Visual mode.
@@ -55,12 +55,12 @@ inoremap <C-s> <Esc>:w<CR>:q<CR> " - Ctrl+S để lưu và thoát trong Insert m
 set clipboard+=unnamedplus " - Copy/paste trực tiếp giữa Neovim và clipboard hệ thống.
 
 " Tự động đóng ngoặc
-inoremap " ""<left>        " - Tự động đóng dấu ".
-inoremap ' ''<left>        " - Tự động đóng dấu '.
-inoremap ( ()<left>        " - Tự động đóng ngoặc tròn.
-inoremap [ []<left>        " - Tự động đóng ngoặc vuông.
-inoremap { {}<left>        " - Tự động đóng ngoặc nhọn.
-inoremap {<CR> {<CR>}<ESC>O " - Tự động đóng ngoặc nhọn và xuống dòng.
+inoremap " ""<left> 
+inoremap ' ''<left>
+inoremap ( ()<left>
+inoremap [ []<left>
+inoremap { {}<left>
+inoremap {<CR> {<CR>}<ESC>O
 
 " Quản lý plugin
 call plug#begin('~/.local/share/nvim/plugged') " - Bắt đầu khai báo plugin.
@@ -70,15 +70,12 @@ Plug 'nvim-tree/nvim-web-devicons'       " - Icon đẹp cho file explorer.
 Plug 'nvim-tree/nvim-tree.lua'           " - File explorer thay thế NERDTree.
 Plug 'vim-airline/vim-airline'           " - Thanh trạng thái đẹp.
 Plug 'vim-airline/vim-airline-themes'    " - Giao diện cho thanh trạng thái.
-Plug 'folke/tokyonight.nvim', { 'as': 'tokyo' } " - Theme giao diện Tokyonight.
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'} " - Hỗ trợ auto-completion giống VSCode.
-Plug 'jiangmiao/auto-pairs'              " - Tự động đóng ngoặc/bracket.
-Plug 'tpope/vim-commentary'              " - Comment code nhanh bằng `gc`.
+" Plug 'neoclide/coc.nvim', {'branch': 'release'} " - Hỗ trợ auto-completion giống VSCode.
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " - Highlight code nâng cao.
 
 Plug 'tpope/vim-fugitive'                " - Tích hợp Git trong Neovim.
-Plug 'airblade/vim-gitgutter'            " - Hiển thị thay đổi Git ở lề.
+" Plug 'airblade/vim-gitgutter'            " - Hiển thị thay đổi Git ở lề.
 
 Plug 'ctrlpvim/ctrlp.vim'                " - Tìm file nhanh giống VSCode Ctrl+P.
 Plug 'nvim-lua/plenary.nvim'             " - Thư viện hỗ trợ plugin Telescope.
@@ -88,6 +85,30 @@ Plug 'williamboman/mason.nvim'          " - Quản lý LSP servers.
 Plug 'williamboman/mason-lspconfig.nvim' " - Cấu hình cho LSP server.
 
 call plug#end() " - Kết thúc khai báo plugin.
+
+" Cấu hình màu sắc
+set termguicolors          " - Bật màu 24-bit (giao diện đẹp hơn).
+set background=dark        " - Tối ưu giao diện cho nền tối.
+
+" Cấu hình phím TAB, Shift+TAB và Enter khi sử dụng CoC (Conquer of Completion)
+" inoremap <silent><expr> <TAB> 
+"       \ coc#pum#visible() ? coc#pum#next(0) :  " - Nếu popup menu (pum) đang hiển thị, chuyển sang mục tiếp theo.
+"       \ CheckBackspace() ? "\<Tab>" :         " - Nếu không, kiểm tra xem phía trước con trỏ có phải khoảng trắng, nếu có thì chèn phím TAB.
+"       \ coc#refresh()                         " - Nếu không thỏa mãn, kích hoạt tính năng gợi ý CoC.
+" inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>" 
+                                             " - Nếu pum hiển thị, chuyển về mục trước đó. Nếu không, xử lý như phím Backspace.
+" inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+                                             " - Nếu pum hiển thị, xác nhận mục đang chọn. Nếu không, thực hiện Enter thông thường.
+
+" Hàm kiểm tra xem phía trước con trỏ có phải khoảng trắng không
+function! CheckBackspace() abort
+  let col = col('.') - 1                      " - Lấy vị trí con trỏ (cột hiện tại trừ 1).
+  return !col || getline('.')[col - 1] =~# '\s' 
+                                             " - Trả về true nếu vị trí con trỏ là đầu dòng hoặc ký tự phía trước là khoảng trắng.
+endfunction
+
+" Tắt tính năng tự động xử lý phím Enter của plugin AutoPairs
+let g:AutoPairsMapCR = 0                     " - Vô hiệu hóa map CR của AutoPairs để tránh xung đột với CoC.
 
 EOF
 

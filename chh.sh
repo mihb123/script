@@ -39,6 +39,7 @@ sed -E '
         s@(src|url|href)="[^/]*/([^"]*)"@\1="../jigyosho-raw/\2"@g
     }
 	# s@require_once '\''\./([^'\'']*)'\''@include '\''\1'\''@g
+	s@require_once\$docrt@//require_once\$docrt@g
 	s@require_once '\''\./@include '\''@g
 	s@require_once'\''\./@include '\''@g
 ' "$backup_file" > "$file"
