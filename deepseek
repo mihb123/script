@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Configuration
+API_KEY="sk-c593d59f90454a20a1a85cef2924a331"  
+API_URL="https://api.deepseek.com/chat/completions"
+MODEL="deepseek-chat"
+TEMPERATURE=0.7
+MAX_TOKENS=1000
+
+# Check if question was provided
+if [ -z "$1" ]; then
+  echo "Usage: $0 \"Your question here\""
+  echo "Example: $0 \"Who is the richest person in the world?\""
+  exit 1
+fi
+
+# Prepare API request
+REQUEST_DATA=$(jq -n \
+  --arg model "$MODEL" \
+  --arg content "$1" \
+  --argjson temp "$TEMPERATURE" \
+  --argjson max_tokens "$MAX_TOKENS" \
+  '{
+    model: $model,
+    messages: [
+      {"role": "system", "content": "You are a helpful AI assistant that provides concise answers."},
+      {"role": "user", "content": $content}
+    ],
+    temperature: $temp,
+    max_tokens: $max_tokens,
+    stream: false
+  }')
+
+# Make API call and capture both output and status
+response=$(curl -s -X POST "$API_URL" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $API_KEY" \
+  -d "$REQUEST_DATA")
+curl_status=$?
+
+# Error handling
+if [ $curl_status -ne 0 ]; then
+  echo "Error: Failed to connect to API (curl error $curl_status)"
+  exit 1
+fi
+
+# Parse and display response
+error=$(echo "$response" | jq -r '.error.message // empty' 2>/dev/null)
+if [ $? -ne 0 ]; then
+  echo "Error: Invalid JSON response from API"
+  exit 1
+fi
+
+if [ -n "$error" ]; then
+  echo "API Error: $error"
+  exit 1
+fi
+
+# Extract and display the response content
+echo -e "\n\033[1mResponse:\033[0m"
+echo "$response" | jq -r '.choices[0].message.content'

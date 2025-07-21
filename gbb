@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Lấy tên file không có phần mở rộng
+filename=$(basename "$1" .cpp)
+
+# Biên dịch
+g++ "$1" -o "$filename"
+

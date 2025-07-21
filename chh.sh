@@ -34,9 +34,9 @@ sed -E '
     /http/ b
     /raw/ b
     # Match lines with src or url and a path
-    /src|url|href="[^"]*"/ {
+    /src|url|href=["\']+["\']/ {
         # Extract path after the first segment (up to first /)
-        s@(src|url|href)="[^/]*/([^"]*)"@\1="../jigyosho-raw/\2"@g
+        s@(src|url|href)="[^/]*/([^"]*)"@\1="/jigyosho-raw/\2"@g
     }
 	# s@require_once '\''\./([^'\'']*)'\''@include '\''\1'\''@g
 	s@require_once\$docrt@//require_once\$docrt@g
