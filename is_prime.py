@@ -1,10 +1,11 @@
-#!/usr/bin/env python3
+#!/home/minhchu1336/bin/venv/bin/python3
 
 import sys
 sys.set_int_max_str_digits(0)
 
-from sympy import isprime, sympify
+from sympy import sympify
 from time import time
+from gmpy2 import mpz, is_prime
 
 def check_prime():
     raw_input = input("Nhập số hoặc biểu thức cần kiểm tra (vd: 2^44497 - 1): ").strip()
@@ -27,7 +28,7 @@ def check_prime():
         print(f"(🔢 Số này có {num_digits:,} chữ số) đang kiểm tra ...")
 
         start = time()
-        if isprime(n):
+        if is_prime(mpz(n), 25):  # 25 round Miller-Rabin (xác suất cao)
             print(f"✅ là số nguyên tố.")
         else:
             print(f"❌ {n} không phải số nguyên tố.")
