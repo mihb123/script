@@ -127,7 +127,7 @@ cp -f "$ZSH_CUSTOM/custom.zsh" $HOME/bin
 # =========================
 # 8. Database Functions
 # =========================
-# test
+
 # Show all databases
 show-tables() {
     mysql -u test_user -ppassword -e "SHOW DATABASES;"

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# 1. Cài Zsh nếu chưa có
+if ! command -v zsh &> /dev/null; then
+    echo "Zsh chưa được cài. Cài đặt..."
+    sudo apt update && sudo apt install -y zsh
+fi
+
+# 2. Cài Oh My Zsh nếu chưa có
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    echo "Cài đặt Oh My Zsh..."
+    export RUNZSH=no
+    export CHSH=no
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
+
+# 3. Cài plugin zsh-autosuggestions
+if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ]; then
+    echo "Cài plugin zsh-autosuggestions..."
+    git clone https://github.com/zsh-users/zsh-autosuggestions \
+        ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+fi
+
+# 4. Cài plugin fzf nếu chưa có
+if ! command -v fzf &> /dev/null; then
+    echo "Cài fzf..."
+    sudo apt install -y fzf || git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
+fi
+
+# 5. Đảm bảo các plugin còn lại có sẵn trong Oh My Zsh
+# z, git, python, docker, emoji, laravel là built-in plugins
+
+# 6. Ghi đè dòng plugins trong ~/.zshrc
+echo "Cập nhật plugins trong ~/.zshrc..."
+sed -i 's/^plugins=(.*)$/plugins=(git z zsh-autosuggestions fzf python docker laravel emoji)/' ~/.zshrc || \
+echo "plugins=(git z zsh-autosuggestions fzf python docker laravel emoji)" >> ~/.zshrc
+
+echo "Xong! Đã chạy: source ~/.zshrc hoặc mở terminal mới để áp dụng."
+cp -r ./custom.zsh $ZSH_CUSTOM/custom.zsh
+source ~/.zshrc
