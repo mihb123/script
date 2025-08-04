@@ -36,5 +36,5 @@ sed -i 's/^plugins=(.*)$/plugins=(git z zsh-autosuggestions fzf python docker la
 echo "plugins=(git z zsh-autosuggestions fzf python docker laravel emoji)" >> ~/.zshrc
 
 echo "Xong! Đã chạy: source ~/.zshrc hoặc mở terminal mới để áp dụng."
-cp -r ./custom.zsh $ZSH_CUSTOM/custom.zsh
+cp -f ./custom.zsh $ZSH_CUSTOM/
 source ~/.zshrc
